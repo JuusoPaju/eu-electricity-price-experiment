@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+  export let data;
+  let jsonData = data.error 
+    ? `Error: ${data.error}` 
+    : JSON.stringify(data.price);
+  </script>
+  
+  <h1>Welcome to SPOTTI</h1>
+  <p>Price data: {jsonData}</p>
