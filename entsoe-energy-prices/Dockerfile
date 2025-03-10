@@ -13,4 +13,4 @@ ENV PROCESS_TYPE=A16
 ENV DOMAIN=10Y1001A1001A82H
 ENV TIME_ZONE=UTC
 
-CMD ["node", "fetchPrices.js"]
+CMD ["node", "server.js"]
