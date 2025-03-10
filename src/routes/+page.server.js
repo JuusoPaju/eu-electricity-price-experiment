@@ -10,7 +10,7 @@ export async function load({ fetch }) {
     }
     const data = await response.json();
     return {
-      price: data
+      data // Pass the data to the page component
     };
   } catch (error) {
     console.error('Fetch error:', error);
