@@ -6,4 +6,4 @@
   </script>
   
   <h1>Welcome to SPOTTI</h1>
-  <p>Price data: {jsonData}</p>
+  <p>{jsonData}</p>
