@@ -5,6 +5,9 @@
 	let { children } = $props();
 </script>
 
+
 <ParaglideJS {i18n}>
-	{@render children()}
+  <div class="dark bg-blue-900">
+	  {@render children()}
+  </div>
 </ParaglideJS>

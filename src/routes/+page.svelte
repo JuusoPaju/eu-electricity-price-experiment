@@ -30,9 +30,8 @@
 
 <div class="flex justify-center">
   <div class="w-full max-w-3xl">
-    <h1 class="text-2xl font-bold mb-4">Electricity Spot Prices, next 24 hours</h1>
+    <h1 class="font-large text-center text-gray-400">Electricity spot price next 24 hours</h1>
     <Table.Root>
-      <Table.Caption>Electricity spot price next 24 hours</Table.Caption>
       <Table.Header>
         <Table.Row>
           <Table.Head class="w-[100px]">Time</Table.Head>
@@ -44,15 +43,13 @@
       <Table.Body>
         {#each data.data as item, i (i)}
           <Table.Row>
-            <Table.Cell class="font-medium">{formatTime(item.timestamp)}</Table.Cell>
-            <Table.Cell>{convertPrice(item.price)} c/kWh</Table.Cell>
-            <Table.Cell>{item.currency}</Table.Cell>
-            <Table.Cell class="text-right">kWh</Table.Cell>
+            <Table.Cell class="font-medium text-gray-400">{formatTime(item.timestamp)}</Table.Cell>
+            <Table.Cell class="font-medium text-gray-400">{convertPrice(item.price)} c/kWh</Table.Cell>
+            <Table.Cell class="font-medium text-gray-400">{item.currency}</Table.Cell>
+            <Table.Cell class="text-right font-medium text-gray-400">kWh</Table.Cell>
           </Table.Row>
         {/each}
       </Table.Body>
     </Table.Root>
-    <p class="mt-4 text-sm text-gray-500">{jsonData}</p>
   </div>
 </div>
-<!-- <p>{jsonData}</p> -->
