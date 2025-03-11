@@ -9,7 +9,10 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const cache = new NodeCache({ stdTTL: 86400 }); // Cache for 24 hour
+
+// Modified cache configuration: 1 hour TTL instead of 24 hours
+const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
+const cacheKeys = []; // Array to track cache keys in order of creation
 
 // Parse ENTSO-E date format
 function formatDateToENTSOEString(date) {
@@ -19,6 +22,22 @@ function formatDateToENTSOEString(date) {
   const hours = String(date.getUTCHours()).padStart(2, '0');
   const minutes = String(date.getUTCMinutes()).padStart(2, '0');
   return `${year}${month}${day}${hours}${minutes}`;
+}
+
+// Function to add a key to cache with tracking
+function addToCache(key, data) {
+  // Add to cache
+  cache.set(key, data);
+  
+  // Add key to tracking array
+  cacheKeys.push(key);
+  
+  // If there are multiple entries, remove the oldest one
+  if (cacheKeys.length > 1) {
+    const oldestKey = cacheKeys.shift(); // Remove and get the oldest key
+    cache.del(oldestKey);
+    console.log(`Deleted oldest cache entry: ${oldestKey}`);
+  }
 }
 
 // Parse XML to structured JSON
@@ -96,8 +115,8 @@ app.get('/api/prices/current', async (req, res) => {
       
       data = await fetchPriceData(startDate, endDate);
       
-      // Store in cache
-      cache.set(cacheKey, data);
+      // Store in cache with tracking
+      addToCache(cacheKey, data);
     }
     
     res.json(data);
@@ -133,8 +152,8 @@ app.get('/api/prices/range', async (req, res) => {
       // If not in cache, fetch from API
       data = await fetchPriceData(start, end, domain);
       
-      // Store in cache
-      cache.set(cacheKey, data);
+      // Store in cache with tracking
+      addToCache(cacheKey, data);
     }
     
     res.json(data);
@@ -143,6 +162,26 @@ app.get('/api/prices/range', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Set up a scheduled task to refresh the current prices cache every hour
+setInterval(async () => {
+  try {
+    console.log('Refreshing current prices cache...');
+    const cacheKey = 'current_prices';
+    
+    const startDate = new Date();
+    const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
+    
+    const data = await fetchPriceData(startDate, endDate);
+    
+    // Update cache with new data
+    addToCache(cacheKey, data);
+    
+    console.log('Cache refreshed successfully at', new Date().toISOString());
+  } catch (error) {
+    console.error('Cache refresh error:', error);
+  }
+}, 3600000); // 3600000 ms = 1 hour
 
 // Start server
 app.listen(port, () => {
