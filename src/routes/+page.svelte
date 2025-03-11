@@ -23,9 +23,6 @@
     return priceInCents.toFixed(2);
   }
   
-  $: jsonData = data.error 
-    ? `Error: ${data.error}` 
-    : JSON.stringify(data);
 </script>
 
 <div class="flex justify-center">
