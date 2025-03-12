@@ -4,6 +4,7 @@ import { XMLParser } from 'fast-xml-parser';
 import dotenv from 'dotenv';
 import NodeCache from 'node-cache';
 
+const MAX_CACHE_SIZE = 5; // Maximum number of cache entries
 // Load environment variables
 dotenv.config();
 
@@ -33,7 +34,7 @@ function addToCache(key, data) {
   cacheKeys.push(key);
   
   // If there are multiple entries, remove the oldest one
-  if (cacheKeys.length > 1) {
+  if (cacheKeys.length > MAX_CACHE_SIZE) {
     const oldestKey = cacheKeys.shift(); // Remove and get the oldest key
     cache.del(oldestKey);
     console.log(`Deleted oldest cache entry: ${oldestKey}`);
